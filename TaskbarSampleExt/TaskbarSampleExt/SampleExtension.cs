@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 namespace TaskbarSampleExt
 {
+    [ComVisible(true)]
     [Guid("B042F593-F406-45A7-8C4A-43DCA5786180")]
     [DeskBandInfo("Beispiel Erweiterung", "Diese ist eine Beispiel Erweiterung für die Taskleiste.")]
     public partial class SampleExtension : DeskBand

@@ -1,7 +1,7 @@
 ﻿// Copyright(c) 2017 Patrick Becker
 //
 // Visit the Project page for more information.
-// https://www.github.com/patbec
+// https://github.com/patbec/TaskbarSampleExtension
 
 
 using Microsoft.Win32;
@@ -18,12 +18,13 @@ namespace TaskbarSampleExt
     /// Basic class for a DeskBand object
     /// </summary>
     /// <example>
+    /// [ComVisible(true)]
     /// [Guid("00000000-0000-0000-0000-000000000000")]
     /// [DeskBandInfo("Beispiel Erweiterung", "Diese ist eine Beispiel Erweiterung für die Taskleiste.")]
     /// public class SampleExtension : DeskBand
     /// { /*...*/ }
     /// </example>
-    public abstract class DeskBand : UserControl, IObjectWithSite, IDeskBand2
+    public class DeskBand : UserControl, IObjectWithSite, IDeskBand2
     {
 
         private const int S_OK = 0;
@@ -227,17 +228,19 @@ namespace TaskbarSampleExt
         {
             string guid = t.GUID.ToString("B");
 
-            RegistryKey rkClass = Registry.ClassesRoot.CreateSubKey(@"CLSID\" + guid);
-            RegistryKey rkCat = rkClass.CreateSubKey("Implemented Categories");
-
             DeskBandInfoAttribute[] deskBandInfo = (DeskBandInfoAttribute[])
-                t.GetCustomAttributes(typeof(DeskBandInfoAttribute), false);
+            t.GetCustomAttributes(typeof(DeskBandInfoAttribute), false);
 
-            string _displayName = t.Name;
-            string _helpText = t.Name;
-
+            // Register only the extension if the attribute DeskBandInfo is used.
             if (deskBandInfo.Length == 1)
             {
+                RegistryKey rkClass = Registry.ClassesRoot.CreateSubKey(@"CLSID\" + guid);
+                RegistryKey rkCat = rkClass.CreateSubKey("Implemented Categories");
+
+                string _displayName = t.Name;
+                string _helpText = t.Name;
+
+
                 if (deskBandInfo[0].DisplayName != null)
                 {
                     _displayName = deskBandInfo[0].DisplayName;
@@ -247,14 +250,18 @@ namespace TaskbarSampleExt
                 {
                     _helpText = deskBandInfo[0].HelpText;
                 }
+
+                rkClass.SetValue(null, _displayName);
+                rkClass.SetValue("MenuText", _displayName);
+                rkClass.SetValue("HelpText", _helpText);
+
+                // TaskBar
+                rkCat.CreateSubKey("{00021492-0000-0000-C000-000000000046}");
+
+                Console.WriteLine(String.Format("{0} {1} {2}", guid, _displayName, "successfully registered."));
+            } else {
+                Console.WriteLine(guid + " has no attributes");
             }
-
-            rkClass.SetValue(null, _displayName);
-            rkClass.SetValue("MenuText", _displayName);
-            rkClass.SetValue("HelpText", _helpText);
-
-            // TaskBar
-            rkCat.CreateSubKey("{00021492-0000-0000-C000-000000000046}");
         }
       
         [ComUnregisterFunctionAttribute]
@@ -263,10 +270,24 @@ namespace TaskbarSampleExt
             string guid = t.GUID.ToString("B");
 
             DeskBandInfoAttribute[] deskBandInfo = (DeskBandInfoAttribute[])
-                t.GetCustomAttributes(typeof(DeskBandInfoAttribute), false);
+            t.GetCustomAttributes(typeof(DeskBandInfoAttribute), false);
 
-            Registry.ClassesRoot.CreateSubKey(@"CLSID").DeleteSubKeyTree(guid);
-        }
+            if (deskBandInfo.Length == 1)
+            {
+                string _displayName = t.Name;
+
+                if (deskBandInfo[0].DisplayName != null)
+                {
+                    _displayName = deskBandInfo[0].DisplayName;
+                }
+
+                Registry.ClassesRoot.CreateSubKey(@"CLSID").DeleteSubKeyTree(guid);
+
+                Console.WriteLine(String.Format("{0} {1} {2}", guid, _displayName, "successfully removed."));
+            } else {
+                Console.WriteLine(guid + " has no attributes");
+            }
+}
 
         #endregion
     }
