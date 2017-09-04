@@ -14,7 +14,7 @@ Es gibt eine Unterstützung für Vertikale Taskbars, Gripper und Transparenz.
 In den Projektdateien gibt es den Ordner **Test**, dort liegen Batchdateien für die _Installation / Deinstallation / Neuinstallation_ (Debugging).
 
 Die Batch Dateien verwenden **gacutil** und **regasm** um die Erweiterung zu registrieren. Diese beiden Tools setzen `NETFX 4.6.1 Tools` und `Framework64\v4.0.30319` voraus. Ist Visual Studio 2017 installiert, sind diese Pakete bereits vorhanden.
-Sollte eine andere .NET Framework Version installiert sein, einfach die Variable `path_gacutil=` und `path_regasm` anpassen.
+Sollte eine andere .NET Framework Version installiert sein, einfach die Variable `path_gacutil` und `path_regasm` anpassen.
 
 Nach dem installieren wird die Erweiterung unter Symbolleisten angezeigt.
 
