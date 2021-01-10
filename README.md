@@ -36,7 +36,7 @@ Nach dem installieren wird die Erweiterung unter Symbolleisten angezeigt.
 
 * **Patrick Becker** - [GitHub](https://github.com/patbec)
 
-E-Mail: [github@bec-wolke.de](mailto:github@bec-wolke.de)
+E-Mail: [git.bec@outlook.de](mailto:git.bec@outlook.de)
 
 ## Lizenz
 
